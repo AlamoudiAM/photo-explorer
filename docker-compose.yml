@@ -1,0 +1,40 @@
+version: "3.5"
+services:
+  photo-explorer-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: photo-explorer-backend
+    volumes:
+      - "/mnt/c/Users/alamo/Downloads:/media"
+      - "photo-explorer-fragments-volume:/fragments"
+      - "/var/www/photo-explorer/backend:/app"
+    networks:
+      - photo-explorer-network
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+    # command: python3 manage.py runserver 0.0.0.0:8000
+
+  photo-explorer-nginx:
+    image: nginx:1.19
+    container_name: photo-explorer-nginx
+    volumes:
+      - "/mnt/c/Users/alamo/Downloads:/media"
+      - "photo-explorer-fragments-volume:/fragments"
+      - "/var/www/photo-explorer/backend/code:/code"
+      - "./nginx/nginx.conf:/etc/nginx/conf.d/default.conf"
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - photo-explorer-network
+    restart: unless-stopped
+
+networks:
+  photo-explorer-network:
+    name: photo-explorer-network
+    driver: bridge
+
+volumes:
+  photo-explorer-fragments-volume:

@@ -1,0 +1,25 @@
+{% load static %}
+
+<!DOCTYPE html> 
+
+<html>
+    <head>
+        <link
+            href="{% static 'node_modules/video.js/dist/video-js.min.css' %}"
+            rel="stylesheet"
+        />
+    </head>
+    <body>
+        <video id=example-video width=960 height=540 class="video-js vjs-default-skin" controls>
+            <source
+               src="http://127.0.0.1/files/playlist.m3u8"
+               type="application/x-mpegURL">
+          </video>
+          <script src="{% static 'node_modules/video.js/dist/video.min.js' %}"></script>
+          <script src="{% static 'node_modules/@videojs/http-streaming/dist/videojs-http-streaming.min.js' %}"></script>
+          <script>
+          var player = videojs('example-video');
+          player.play();
+          </script>
+    </body>
+</html>
