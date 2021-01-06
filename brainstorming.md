@@ -10,22 +10,26 @@
 
 ```bash
 ffmpeg \
-    -ss 00:01:01.00 \
-    -i Big_Buck_Bunny_4K.webm \
-    -t 00:00:45.00 \
+	`# -timelimit 15` \
+    `#-ss 00:00:00.00` \
+    -i DSC_8939.MOV \
+    `#-t 00:00:45.00` \
     -vf scale=-2:720 \
     -vcodec libx264 \
     -preset veryfast \
     -acodec aac \
     -pix_fmt yuv420p \
     -x264opts:0 subme=0:me_range=4:rc_lookahead=10:me=dia:no_chroma_me:8x8dct=0:partitions=none \
-    -force_key_frames "expr:gte(t,n_forced*3.000)" \
-    -f segment \
+    -force_key_frames "expr:gte(t,n_forced*8.000)" \
+	-f segment \
     -segment_list playlist.m3u8 \
-    -segment_time 3 `# each segment length` \
-    -segment_start_number 5 `# segment filename start` \
+    -segment_time 8 `# each segment length` \
+    `#-segment_start_number 5` `# segment filename start` \
+    `-output_ts_offset 00:10:10.000` \
     -vsync 2 \
-    out%03d.ts
+    out%06d.ts
+    
+
 ```
 
 google: python video transcode
