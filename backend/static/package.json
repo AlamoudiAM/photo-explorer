@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@videojs/http-streaming": "^2.4.1",
+    "hls.js": "^0.14.17",
     "video.js": "^7.10.2"
   }
 }

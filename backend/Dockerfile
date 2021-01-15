@@ -10,6 +10,8 @@ RUN apt install -y python3-dev python3-psycopg2
 
 # Other
 RUN apt install -y npm
+RUN apt install -y time
+RUN apt install -y procps
 
 # location where static is generated (on runtime - using django collectstatic)
 VOLUME /app/collected_static

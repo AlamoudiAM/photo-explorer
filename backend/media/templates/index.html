@@ -10,9 +10,10 @@
         />
     </head>
     <body>
+        {{m3u8_request_identifier}}
         <video id=example-video width=960 height=540 class="video-js vjs-default-skin" controls>
             <source
-               src="http://192.168.1.160/files/playlist.m3u8"
+               src="{{playlist_absolute_uri}}"
                type="application/x-mpegURL">
           </video>
           <script src="{% static 'node_modules/video.js/dist/video.min.js' %}"></script>

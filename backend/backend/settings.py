@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+from cryptography.fernet import Fernet
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +26,7 @@ SECRET_KEY = 'ixe1s%&k29_k9(lo(2h(0^o#iuc^j!9z%_q2u8c=%fm3s10k=2'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['photo-explorer-backend']
+ALLOWED_HOSTS = ['photo-explorer-backend', '192.168.1.160', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -126,3 +127,13 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
     "/npm_static",
 ]
+
+fernet_key = Fernet.generate_key()
+# TODO: to be removed after automate process
+fernet_key = b'Jo02dam-TkF2g6-8egMh4zDH5Z7mvPj2TRYJlAmNA5Q='
+cache_folder = '/media/'
+ssl = False
+default_segment = 3
+cache_base_url = 'http://192.168.1.160/files/'
+'current_transcode.m3u8'
+playlist_name = 'playlist'
