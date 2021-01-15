@@ -86,7 +86,7 @@ def get_segments_list(duration):
 
 def generate_m3m8(segments_list, m3u8_request_identifier):
     # header
-    m3m8 = '#EXTM3U\n#EXT-X-VERSION:3\n#EXT-X-MEDIA-SEQUENCE:0\n#EXT-X-ALLOW-CACHE:YES\n#EXT-X-TARGETDURATION:{}\n'.format(default_segment)
+    m3m8 = '#EXTM3U\n#EXT-X-VERSION:3\n#EXT-X-MEDIA-SEQUENCE:0\n#EXT-X-ALLOW-CACHE:NO\n#EXT-X-TARGETDURATION:{}\n'.format(default_segment)
     # body
     for index, segment in enumerate(segments_list):
         m3m8 = m3m8 + '#EXTINF:{}.0000, nodesc\n{}\n'.format(segment, reverse('media', kwargs={'ts_filename': '{:06d}.ts'.format(index), 'm3u8_request_identifier': m3u8_request_identifier}))

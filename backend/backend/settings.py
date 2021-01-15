@@ -137,3 +137,7 @@ default_segment = 3
 cache_base_url = 'http://192.168.1.160/files/'
 'current_transcode.m3u8'
 playlist_name = 'playlist'
+
+# pasue/terminate nonactive transcodes after # seconds
+pause_transcodes_after = 9
+terminate_transcodes_after = 60*5

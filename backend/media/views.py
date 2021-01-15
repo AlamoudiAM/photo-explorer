@@ -38,7 +38,6 @@ def view_video(request, encrypted_file_fullpath):
         "group_pid": None,
         "starting_segment": None,
         "last_requested_segment": None,
-        "last_transcoded_segment": None,
     }
     
     playlist_absolute_uri = cache_base_url + m3u8_request_identifier + '/' + playlist_name + '.m3u8'
@@ -64,8 +63,6 @@ def get_video(request, m3u8_request_identifier, ts_filename):
 
     current_requested_segment = index
 
-    print(m3u8_request_details)
-
     # start new transcoding in case of fresh m3u8 play
     if not m3u8_request_details.get('pid'):
         pid, group_pid = start_transcode(m3u8_request_path, duration, file_fullpath, current_requested_segment)
@@ -74,27 +71,12 @@ def get_video(request, m3u8_request_identifier, ts_filename):
         m3u8_request_details['updating_time'] = datetime.now().isoformat()
         m3u8_request_details['starting_segment'] = current_requested_segment
         m3u8_request_details['last_requested_segment'] = current_requested_segment
-        m3u8_request_details['last_transcoded_segment'] = current_requested_segment
-
-
-        # for x in range(10):
-        #     time.sleep(1)
-        #     print('stopped', x)
-        # os.killpg(group_pid, signal.SIGTERM) 
     else:
         group_pid = m3u8_request_details['group_pid']
         starting_segment = m3u8_request_details['starting_segment']
         last_requested_segment = m3u8_request_details['last_requested_segment']
-        current_transcode = m3u8.load('{}/current_transcode.m3u8'.format(m3u8_request_path))
-        last_transcoded_segment = len(current_transcode.segments) - 1
-        gap_segments = 3
 
-        # if differenc between current_requested_segment and last_requested_segment is not 1 segment
-        # or if current_requested_segment isn't in range of starting_segment and last_transcoded_segment
-        # then terminate current transcoding and start new transcoding
-        
-        # print(abs(current_requested_segment - last_requested_segment))
-        # print(current_requested_segment, starting_segment)
+        # terminate current transcoding and start new transcoding
         if abs(current_requested_segment - last_requested_segment) not in [0, 1] or current_requested_segment < starting_segment:
             if group_pid:
                 os.killpg(group_pid, signal.SIGTERM) 
@@ -105,40 +87,18 @@ def get_video(request, m3u8_request_identifier, ts_filename):
             m3u8_request_details['group_pid'] = group_pid
             m3u8_request_details['starting_segment'] = current_requested_segment
             m3u8_request_details['created_time'] = datetime.now().isoformat()
-        # pause transcoding if gap between last_transcoded_segment and last_requested_segment is more than 3 segments
-        elif last_transcoded_segment > last_requested_segment + gap_segments:
-            if group_pid:
-                os.killpg(group_pid, signal.SIGSTOP) 
-        # else continue transcoding
-        else:
-            if group_pid:
-                os.killpg(group_pid, signal.SIGCONT) 
-
+        os.killpg(group_pid, signal.SIGCONT) 
         m3u8_request_details['updating_time'] = datetime.now().isoformat()
         m3u8_request_details['last_requested_segment'] = current_requested_segment
-        m3u8_request_details['last_transcoded_segment'] = last_transcoded_segment
 
     request.session[m3u8_request_identifier] = m3u8_request_details
 
-    # TODO: remove <defunct> processes
-    # TODO: loop over m3u8_request_identifier in sessions and remove/kill outdated processes and sessions
-
-    
     with open('{}/current_transcode.m3u8'.format(m3u8_request_path), 'r') as f:
-        # response = HttpResponse(content_type='application/x-mpegURL')
-        # response['Content-Disposition'] = 'filename="{}"'.format(smart_str(ts_filename))
-        # response['X-Accel-Redirect'] = smart_str(ts_path)
-        # return response
-
-        # # return StreamingHttpResponse(open(ts_path, 'r'))
         if ts_filename in f.read():
             return redirect(ts_uri)
         else:
-            time.sleep(1)
+            # time.sleep(1)
             raise Http404("file under proccessing")
-
-
-
 
 def start_transcode(m3u8_request_path, start, file_fullpath, current_requested_segment):
     cmd = subprocess.run("""mkdir -p {}""".format(m3u8_request_path), shell=True, capture_output=True)

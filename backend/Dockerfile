@@ -12,6 +12,7 @@ RUN apt install -y python3-dev python3-psycopg2
 RUN apt install -y npm
 RUN apt install -y time
 RUN apt install -y procps
+RUN apt install  -y cron
 
 # location where static is generated (on runtime - using django collectstatic)
 VOLUME /app/collected_static
@@ -26,3 +27,9 @@ RUN npm install
 WORKDIR /app
 COPY ./requirements.txt ./
 RUN pip install -r requirements.txt
+
+# setup cronjob
+COPY cronjob /etc/cron.d/cronjob
+RUN chmod 0644 /etc/cron.d/cronjob
+RUN crontab /etc/cron.d/cronjob
+RUN touch /var/log/cron.log
