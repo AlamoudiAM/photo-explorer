@@ -8,6 +8,7 @@
             href="{% static 'node_modules/video.js/dist/video-js.min.css' %}"
             rel="stylesheet"
         />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
         {{m3u8_request_identifier}}
@@ -19,7 +20,15 @@
           <script src="{% static 'node_modules/video.js/dist/video.min.js' %}"></script>
           <script src="{% static 'node_modules/@videojs/http-streaming/dist/videojs-http-streaming.min.js' %}"></script>
           <script>
-          var player = videojs('example-video');
+          var player = videojs('example-video', {
+            html5: {
+                vhs: {
+                overrideNative: true
+                },
+                nativeAudioTracks: false,
+                nativeVideoTracks: false
+            }
+            });
           player.play();
           </script>
     </body>

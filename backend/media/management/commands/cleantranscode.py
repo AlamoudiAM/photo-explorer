@@ -38,4 +38,4 @@ class Command(BaseCommand):
                         paused += 1
                 except ProcessLookupError:
                     not_exist += 1
-        self.stdout.write('terminated: {}, paused: {}, not_exist: {}'.format(terminated, paused, not_exist))
+        self.stdout.write('{}\tterminated: {}, paused: {}, not_exist: {}'.format(datetime.now().isoformat(), terminated, paused, not_exist))

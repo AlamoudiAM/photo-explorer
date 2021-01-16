@@ -1,6 +1,10 @@
-* * * * * /usr/local/bin/python /app/manage.py cleantranscode >> /var/log/cron.log 2>&1
-* * * * * sleep 10; /usr/local/bin/python /app/manage.py cleantranscode >> /var/log/cron.log 2>&1
-* * * * * sleep 20; /usr/local/bin/python /app/manage.py cleantranscode >> /var/log/cron.log 2>&1
-* * * * * sleep 30; /usr/local/bin/python /app/manage.py cleantranscode >> /var/log/cron.log 2>&1
-* * * * * sleep 40; /usr/local/bin/python /app/manage.py cleantranscode >> /var/log/cron.log 2>&1
-* * * * * sleep 50; /usr/local/bin/python /app/manage.py cleantranscode >> /var/log/cron.log 2>&1
+* * * * * export $(xargs < /app/.env); /usr/local/bin/python /app/manage.py cleantranscode >> /var/log/cron.log 2>&1
+* * * * * sleep 10; export $(xargs < /app/.env); /usr/local/bin/python /app/manage.py cleantranscode >> /var/log/cron.log 2>&1
+* * * * * sleep 20; export $(xargs < /app/.env); /usr/local/bin/python /app/manage.py cleantranscode >> /var/log/cron.log 2>&1
+* * * * * sleep 30; export $(xargs < /app/.env); /usr/local/bin/python /app/manage.py cleantranscode >> /var/log/cron.log 2>&1
+* * * * * sleep 40; export $(xargs < /app/.env); /usr/local/bin/python /app/manage.py cleantranscode >> /var/log/cron.log 2>&1
+* * * * * sleep 50; export $(xargs < /app/.env); /usr/local/bin/python /app/manage.py cleantranscode >> /var/log/cron.log 2>&1
+
+
+
+

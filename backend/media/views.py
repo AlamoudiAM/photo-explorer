@@ -78,8 +78,11 @@ def get_video(request, m3u8_request_identifier, ts_filename):
 
         # terminate current transcoding and start new transcoding
         if abs(current_requested_segment - last_requested_segment) not in [0, 1] or current_requested_segment < starting_segment:
-            if group_pid:
+            try:
                 os.killpg(group_pid, signal.SIGTERM) 
+            except ProcessLookupError:
+                pass
+            
             # remove ts files
             cmd = subprocess.run("""rm -f {}/*.ts""".format(m3u8_request_path), shell=True, capture_output=True)
             pid, group_pid = start_transcode(m3u8_request_path, duration, file_fullpath, current_requested_segment)
@@ -93,13 +96,20 @@ def get_video(request, m3u8_request_identifier, ts_filename):
 
     request.session[m3u8_request_identifier] = m3u8_request_details
 
-    with open('{}/current_transcode.m3u8'.format(m3u8_request_path), 'r') as f:
-        if ts_filename in f.read():
-            return redirect(ts_uri)
-        else:
-            # time.sleep(1)
-            raise Http404("file under proccessing")
-
+    # maximum wait for segment to be ready is 10 seconds
+    # in Safari segment has to be returned proccessed
+    # else segment is skipped
+    # therefore wait until segemnt is proccessed
+    total_wait = 0
+    while total_wait < 10:
+        with open('{}/current_transcode.m3u8'.format(m3u8_request_path), 'r') as f:
+            if ts_filename in f.read():
+                return redirect(ts_uri)
+        sleep = 0.5
+        time.sleep(sleep)
+        total_wait += sleep
+    raise Http404
+    
 def start_transcode(m3u8_request_path, start, file_fullpath, current_requested_segment):
     cmd = subprocess.run("""mkdir -p {}""".format(m3u8_request_path), shell=True, capture_output=True)
     cmd = subprocess.run("""touch {}/current_transcode.m3u8""".format(m3u8_request_path), shell=True, capture_output=True)

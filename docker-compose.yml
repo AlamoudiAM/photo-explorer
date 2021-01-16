@@ -7,21 +7,34 @@ services:
     container_name: photo-explorer-backend
     volumes:
       - "/mnt/c/Users/alamo/Downloads:/media"
-      - "photo-explorer-fragments-volume:/fragments"
       - "/var/www/photo-explorer/backend:/app"
     networks:
       - photo-explorer-network
+    env_file: ./backend/.env
     stdin_open: true
     tty: true
     restart: unless-stopped
-    # command: python3 manage.py runserver 0.0.0.0:8000
+    # command: cron && python3 manage.py runserver 0.0.0.0:8000
+    depends_on:
+      - photo-explorer-db
+
+  photo-explorer-db:
+    image: postgres:12
+    container_name: photo-explorer-db
+    ports:
+      - "5432:5432"
+    env_file: ./backend/.env
+    volumes:
+      - "backend_db:/var/lib/postgresql/data"
+    restart: unless-stopped
+    networks:
+      - photo-explorer-network
 
   photo-explorer-nginx:
     image: nginx:1.19
     container_name: photo-explorer-nginx
     volumes:
       - "/mnt/c/Users/alamo/Downloads:/media"
-      - "photo-explorer-fragments-volume:/fragments"
       - "/var/www/photo-explorer/backend/code:/code"
       - "./nginx/nginx.conf:/etc/nginx/conf.d/default.conf"
     ports:
@@ -30,11 +43,13 @@ services:
     networks:
       - photo-explorer-network
     restart: unless-stopped
-
+    depends_on:
+      - photo-explorer-backend
+      
 networks:
   photo-explorer-network:
     name: photo-explorer-network
     driver: bridge
 
 volumes:
-  photo-explorer-fragments-volume:
+  backend_db:
