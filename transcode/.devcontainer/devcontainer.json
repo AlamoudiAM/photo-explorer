@@ -1,9 +1,9 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.154.0/containers/docker-from-docker-compose
 {
-	"name": "photo-explorer-backend",
+	"name": "photo-explorer-video-transcode",
 	"dockerComposeFile": "../../docker-compose.yml",
-	"service": "photo-explorer-backend",
+	"service": "photo-explorer-video-transcode",
 	"workspaceFolder": "/app",
 
 	// Use this environment variable if you need to bind mount your local source code into a new container.

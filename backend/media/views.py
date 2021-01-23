@@ -16,7 +16,7 @@ from django.utils.encoding import smart_str
 f = Fernet(fernet_key)
 file_fullpath = f.encrypt(b"/media/Big_Buck_Bunny_4K.webm")
 # copy file_fullpath to url
-# print(file_fullpath)
+print(file_fullpath)
 
 
 # * encrypted_file_fullpath: after decrypted it contains file (e.g. original video) full path

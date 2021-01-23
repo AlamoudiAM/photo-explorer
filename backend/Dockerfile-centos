@@ -1,18 +1,18 @@
-FROM python:3.7-slim-buster
+FROM centos:7
 
-RUN apt -y update
-
-# video transcode
-RUN apt install -y ffmpeg
+# ffmpeg
+RUN yum -y localinstall --nogpgcheck https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-7.noarch.rpm https://mirrors.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-7.noarch.rpm
+RUN yum -y install ffmpeg
 
 # PostgresSQL
-RUN apt install -y python3-dev python3-psycopg2
+RUN yum -y install postgresql-libs
 
 # Other
-RUN apt install -y npm
-RUN apt install -y time
-RUN apt install -y procps
-RUN apt install -y cron
+RUN yum -y install -y npm
+RUN yum -y install -y cronie
+
+# python
+RUN yum -y install python3-pip
 
 # location where static is generated (on runtime - using django collectstatic)
 VOLUME /app/collected_static
@@ -26,7 +26,7 @@ RUN npm install
 # install backend python requirements
 WORKDIR /app
 COPY ./requirements.txt ./
-RUN pip install -r requirements.txt
+RUN pip3 install -r requirements.txt
 
 # setup cronjob
 COPY cronjob /etc/cron.d/cronjob

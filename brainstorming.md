@@ -167,3 +167,24 @@ in case of user exist video
 # pause pid
 ```
 
+# transcoding
+
+```bash
+        ffmpeg -vaapi_device /dev/dri/renderD128 \
+            -ss 0 \
+            -i Big_Buck_Bunny_4K.webm \
+            -vf 'format=nv12,hwupload' \
+            -vcodec h264_vaapi \
+            -preset veryfast \
+            -acodec aac \
+            -x264opts:0 subme=0:me_range=4:rc_lookahead=10:me=dia:no_chroma_me:8x8dct=0:partitions=none \
+            -force_key_frames "expr:gte(t,n_forced*10.000)" \
+            -f segment \
+            -segment_list current_transcode.m3u8 \
+            -segment_time 10 \
+            -segment_start_number 0 \
+            -output_ts_offset 0 \
+            -vsync 2 \
+            %06d.ts
+            
+```
